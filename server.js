@@ -19,13 +19,17 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
     console.log('Un cliente se ha conectado');
     
-    // Escuchar eventos del cliente
-    socket.on('mensaje_cliente', (data) => {
-        console.log('Mensaje recibido:', data);
+    // Escucha el evento de nueva notificación
+    socket.on("nueva_notificacion", (data) => {
+        console.log("Nueva notificación recibida:", data);
+
+        // Reenvía la notificación a todos los clientes conectados
+        io.emit("mostrar_notificacion", data);
     });
 
-    // Enviar un mensaje al cliente
-    socket.emit('mensaje_servidor', 'Bienvenido al servidor');
+    socket.on("disconnect", () => {
+        console.log("Cliente desconectado:", socket.id);
+    });
 });
 
 // Escuchar en el puerto 3000 (o el puerto asignado)
